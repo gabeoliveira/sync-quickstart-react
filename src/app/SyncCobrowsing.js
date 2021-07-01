@@ -4,8 +4,7 @@ import React from 'react';
 import SyncClient from 'twilio-sync';
 import axios from 'axios';
 
-import Participants from './Participants.js'
-import SyncedInputField from './SyncedInputField';
+import ParticipantsList from './ParticipantsList.js'
 
 class SyncCobrowsing extends React.Component {
   constructor(props) {
@@ -15,11 +14,13 @@ class SyncCobrowsing extends React.Component {
       errorMessage: '',
       participants: [],
       formData: {
+        players: [],
         firstName: '',
         lastName: '',
         phoneNumber: '',
         subscribeToMailingList: false
       }
+
     };
 
     this.setFormValue = this.setFormValue.bind(this);
@@ -35,7 +36,7 @@ class SyncCobrowsing extends React.Component {
   }
 
   async retrieveToken(identity) {
-    let result = await axios.get('/token/' + this.props.identity);
+    let result = await axios.get('https://fast-thicket-53755.herokuapp.com/token/' + this.props.identity);
     let accessToken = result.data.token;
     if (accessToken != null) {
       if (this.client) {
@@ -183,33 +184,16 @@ class SyncCobrowsing extends React.Component {
   }
 
   render() {
+    console.log(this.state.formData.players);
     return (
       <React.Fragment>
         <div className="container">
             <div className="card border-primary">
                 <div className="card-header text-info">
-                    <span id="status">{this.state.status}</span>
-                </div>
-                <div className="card-header text-info">
-                    Participants:<br />
-                    <Participants participants={this.state.participants}/>
-                </div>
-            </div>
-            <div className="card border-primary">
-                <div className="card-header text-info">
                     <div className="input-group mb-3">
-                      <SyncedInputField
-                        setFormValue={this.setFormValue}
-                        formDataKey="firstName" 
-                        formDataValue={this.state.formData['firstName']} 
-                        placeholder="First Name"/>
-                    </div>
-                    <div className="input-group mb-3">
-                      <SyncedInputField
-                        setFormValue={this.setFormValue}
-                        formDataKey="lastName" 
-                        formDataValue={this.state.formData['lastName']} 
-                        placeholder="Last Name"/>
+                      <ParticipantsList
+                        gameId={this.props.sessionId}
+                        participants={this.state.formData.players} />
                     </div>
                 </div>
             </div>
