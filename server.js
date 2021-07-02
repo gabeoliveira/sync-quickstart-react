@@ -34,7 +34,8 @@ app.use(session(
 
 app.get('/token/:id?', (req, res) => {
   const id = req.params.id;
-  res.send(tokenGenerator(id));
+  res.send(tokenGenerator(id)
+    .catch(err => console.log(err.message)));
 });
 
 app.post('/token', (req, res) => {
