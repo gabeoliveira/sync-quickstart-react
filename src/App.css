@@ -16,3 +16,8 @@ table {
   margin-top: 10px;
   margin-bottom: 10px;
 }
+
+button.discord-button {
+  background-color: #5865F2;
+  appearance: button;
+}

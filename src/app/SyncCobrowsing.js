@@ -36,7 +36,7 @@ class SyncCobrowsing extends React.Component {
   }
 
   async retrieveToken(identity) {
-    let result = await axios.get('https://fast-thicket-53755.herokuapp.com/token/' + this.props.identity);
+    let result = await axios.get('/token/' + this.props.identity);
     let accessToken = result.data.token;
     if (accessToken != null) {
       if (this.client) {
@@ -188,16 +188,9 @@ class SyncCobrowsing extends React.Component {
     return (
       <React.Fragment>
         <div className="container">
-            <div className="card border-primary">
-                <div className="card-header text-info">
-                    <div className="input-group mb-3">
-                      <ParticipantsList
-                        gameId={this.props.sessionId}
-                        participants={this.state.formData.players} />
-                    </div>
-                </div>
-            </div>
-
+          <ParticipantsList
+            gameId={this.props.sessionId}
+            participants={this.state.formData.players} />
         </div>
         <span id="floating-badges"></span>
         <span id="signals"></span>

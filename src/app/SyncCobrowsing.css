@@ -5,6 +5,11 @@
 .container {
   
   width: auto;
+  margin-top: 20px;
+  border: 1px solid #5865F2;
+  border-radius: 10px;
+  background-color: rgba(245, 245, 245, 0.212);
+  padding: 3px 3px 3px 3px;
 }
 
 .input-group-text {

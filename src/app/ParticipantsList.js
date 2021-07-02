@@ -16,9 +16,7 @@ const PlayerContainer = styled('div')`
     grid-column-start: ${props => (props.length / props.index) > 2 ? props.index + 1 : props.length - props.index};
     padding: 80px 80px 80px 80px;
     ${props => props.activeTurn ? 'border: 1px solid sandybrown; background-color: rgba(244, 165, 96, 0.2);' : undefined}
-    
-    
-
+    border-radius: 6px;
 `
 
 const Life = styled('div')`

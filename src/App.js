@@ -1,23 +1,41 @@
 import React from 'react';
 
 import './App.css';
-import SyncCobrowsing from './app/SyncCobrowsing.js'
+import TopBar from './app/TopBar';
+import SyncCobrowsing from './app/SyncCobrowsing.js';
+
+
+
 
 class App extends React.Component {
   constructor(props) {
     super(props);
 
     const search = props.location.search;
-    const sessionId = new URLSearchParams(search).get('gameId');
+    const sessionId = new URLSearchParams(search).get('gameId') || localStorage.getItem('gameId');
+
+    localStorage.setItem('gameId',sessionId);
+
     this.state = {
       sessionId: sessionId,
       identity: 'dd',
-      isLoggedIn: true
+      isLoggedIn: false
     };
+
+    this.logout = this.logout.bind(this);
+  }
+
+  componentDidMount(){
+    fetch('/user', {
+      credentials: 'include' // fetch won't send cookies unless you set credentials
+        })
+        .then(response => response.json())
+        .then(response => response.username && this.login());
   }
 
   setSessionId(event) {
     this.setState({sessionId: event.target.value});
+    localStorage.setItem('gameId',event.target.value);
   }
 
   setIdentity(event) {
@@ -29,22 +47,18 @@ class App extends React.Component {
   }
 
   logout() {
-    this.setState({isLoggedIn: false})
+    fetch('/logout', {
+      credentials: 'include' // fetch won't send cookies unless you set credentials
+        })
+        .then(response => response.json())
+        .then(response => this.setState({isLoggedIn: false}));
   }
 
   render() {
 
     return (
       <div className="App">
-        <header className="App-header">
-          <h1>EDH Game Dashboard</h1>
-      
-          <div className="logout-container">
-          { this.state.isLoggedIn  &&
-            <button className="btn btn-primary" onClick={e => this.logout() }>Logout</button>
-          }
-          </div>
-        </header>
+        <TopBar isLoggedIn={this.state.isLoggedIn} logout={this.logout}/>
         { this.state.sessionId ? 
           <SyncCobrowsing sessionId={this.state.sessionId} identity={this.state.identity}/> :
           
