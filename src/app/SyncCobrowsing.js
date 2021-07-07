@@ -12,28 +12,63 @@ class SyncCobrowsing extends React.Component {
     this.state = {
       status: 'Connecting...',
       errorMessage: '',
-      participants: [],
       formData: {
         players: [],
-        firstName: '',
-        lastName: '',
-        phoneNumber: '',
-        subscribeToMailingList: false
+        gameStarted: false
       }
 
     };
 
     this.setFormValue = this.setFormValue.bind(this);
+    this.handleKeypress = this.handleKeypress.bind(this);
   }
 
   componentDidMount() {
     // fetch an access token from the localhost server
-    console.log(this.props);
-
     this.retrieveToken(this.props.identity);
+
+    document.addEventListener("keydown", this.handleKeypress, false);
   }
 
+  componentWillUnmount(){
+    document.removeEventListener("keydown", this.handleKeypress, false);
+  }
 
+  handleKeypress(e){
+
+    if(e.key === "ArrowDown"){
+      this.handleLife(-1);
+    }
+
+    else if(e.key === "ArrowUp"){
+      this.handleLife(1);
+    }
+
+    else if(e.key === ' '){
+      this.handlePass();
+    }
+
+  }
+
+  handleLife(value){
+    var formData = this.state.formData;
+
+    var playerIndex = formData.players.map(player => player.username).indexOf(this.props.identity);
+    formData.players[playerIndex].lifeTotal += value;
+ 
+    this.setState({formData: formData}, () => this.updateSyncDocument(formData));
+  }
+
+  handlePass(){
+    var formData = this.state.formData;
+    var playerIndex = formData.players.map(player => player.activeTurn).indexOf(true);
+
+    formData.players[playerIndex].activeTurn = false;
+    formData.players[(playerIndex + 1) % formData.players.length].activeTurn = true;
+
+    this.setState({formData: formData}, () => this.updateSyncDocument(formData));
+
+  }
 
   async retrieveToken(identity) {
     let result = await axios.get('/token/' + identity);

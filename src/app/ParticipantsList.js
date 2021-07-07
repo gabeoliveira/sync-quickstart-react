@@ -224,8 +224,6 @@ class ParticipantsList extends React.Component {
                         break;
                 }
 
-                console.log(backgroundColor);
-
                 return <ColorIdentity backgroundColor={backgroundColor} ></ColorIdentity>
 
             })
