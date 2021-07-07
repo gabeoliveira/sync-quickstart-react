@@ -6,10 +6,12 @@
   
   width: auto;
   margin-top: 20px;
+  max-width: 1600px;
   border: 1px solid #5865F2;
   border-radius: 10px;
-  background-color: rgba(245, 245, 245, 0.212);
+  background-color: rgba(80, 79, 79, 0.233);
   padding: 3px 3px 3px 3px;
+  
 }
 
 .input-group-text {
@@ -19,6 +21,7 @@
 .floating-badge {
   position: absolute;
   opacity: 0.5;
+  color: rgb(255, 252, 208)
 }
 
 .badge {

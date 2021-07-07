@@ -4,15 +4,16 @@ const router = express.Router();
 
 const CLIENT_ID = process.env.DISCORD_CLIENT_ID;
 const CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET;
+const REDIRECT_URL = process.env.REDIRECT_URL;
 const PORT = process.env.PORT || 5000;
-const redirect = encodeURIComponent(`http://localhost:${PORT}/api/discord/callback`);
+const redirect = encodeURIComponent(`${REDIRECT_URL}/api/discord/callback`);
 
 console.log(redirect);
 
 const discordAuth = new DiscordOauth2({
   clientId: CLIENT_ID,
   clientSecret: CLIENT_SECRET,
-  redirectUri: `http://localhost:${PORT}/api/discord/callback`
+  redirectUri: `${REDIRECT_URL}/api/discord/callback`
 });
 
 router.get('/login', (req, res) => {

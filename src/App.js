@@ -18,11 +18,13 @@ class App extends React.Component {
 
     this.state = {
       sessionId: sessionId,
-      identity: 'dd',
+      identity: '',
       isLoggedIn: false
     };
 
     this.logout = this.logout.bind(this);
+    this.login = this.login.bind(this);
+
   }
 
   componentDidMount(){
@@ -30,10 +32,12 @@ class App extends React.Component {
       credentials: 'include' // fetch won't send cookies unless you set credentials
         })
         .then(response => response.json())
-        .then(response => response.username && this.login());
+        .then(response => response.username ? this.setState({isLoggedIn: true, identity: response.username}) : window.location.href = '/api/discord/login');
   }
 
   setSessionId(event) {
+    console.log(event);
+
     this.setState({sessionId: event.target.value});
     localStorage.setItem('gameId',event.target.value);
   }
@@ -42,8 +46,15 @@ class App extends React.Component {
     this.setState({identity: event.target.value});
   }
 
-  login() {
-    this.setState({isLoggedIn: true})
+  login(user) {
+    console.log(user);
+
+    this.setState({
+      isLoggedIn: true,
+      identity: user
+    });
+
+    console.log(this.state);
   }
 
   logout() {
@@ -51,7 +62,7 @@ class App extends React.Component {
       credentials: 'include' // fetch won't send cookies unless you set credentials
         })
         .then(response => response.json())
-        .then(response => this.setState({isLoggedIn: false}));
+        .then(response => this.setState({isLoggedIn: false, identity: ''}));
   }
 
   render() {
@@ -59,9 +70,9 @@ class App extends React.Component {
     return (
       <div className="App">
         <TopBar isLoggedIn={this.state.isLoggedIn} logout={this.logout}/>
-        { this.state.sessionId ? 
-          <SyncCobrowsing sessionId={this.state.sessionId} identity={this.state.identity}/> :
-          
+        { this.state.isLoggedIn && 
+          <SyncCobrowsing sessionId={this.state.sessionId} identity={this.state.identity}/> }
+          {!this.state.sessionId ?
           <div className="container">
             <div className="card border-primary">
               <div className="card-body text-info">
@@ -71,13 +82,12 @@ class App extends React.Component {
                   <input type="text" placeholder="Session Id" 
                     defaultValue={this.state.sessionId}
                     onChange={e => this.setSessionId(e)}></input>
-                    <button className="btn btn-primary" onClick={e => this.login() }>Access</button>
                 </div>
               </div>
             </div>
           </div>
+       : undefined
         }
-        
       </div>
     );
   }

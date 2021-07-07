@@ -28,15 +28,15 @@ class SyncCobrowsing extends React.Component {
 
   componentDidMount() {
     // fetch an access token from the localhost server
+    console.log(this.props);
+
     this.retrieveToken(this.props.identity);
   }
 
-  componentWillUnmount() {
-    this.removeParticipant(this.props.identity);
-  }
+
 
   async retrieveToken(identity) {
-    let result = await axios.get('/token/' + this.props.identity);
+    let result = await axios.get('/token/' + identity);
     let accessToken = result.data.token;
     if (accessToken != null) {
       if (this.client) {
@@ -64,47 +64,6 @@ class SyncCobrowsing extends React.Component {
     return 'participants-' + this.props.sessionId;
   }
 
-  addParticipant(identity) {
-    this.client.map(this.getParticipantsKey()).then(function(map) {
-      map.set(identity, {
-        identity: identity
-      }).then(function(item) {
-        console.log('Added: ', item.key);
-      }).catch(function(err) {
-        console.error(err);
-      });
-    });
-  }
-
-  removeParticipant(identity) {
-    this.client.map(this.getParticipantsKey()).then(function(map) {
-      map.remove(identity)
-        .then(function() {
-          console.log('Participant ' + identity + ' removed.');
-        })
-        .catch(function(error) {
-          console.error('Error removing: ' + identity, error);
-        })
-    });
-  }
-
-  async subscribeToParticipantsUpdates() {
-    var component = this;
-    this.client.map(this.getParticipantsKey()).then(function(map) {
-      map.on('itemAdded', function(event) {
-        component.refreshParticipants(map);
-      });
-
-      map.on('itemUpdated', function(event) {
-        component.refreshParticipants(map);
-      });
-
-      map.on('itemRemoved', function(event) {
-        component.refreshParticipants(map);
-      });
-      
-    });
-  }
 
   refreshParticipants(map) {
     this.getAllItems(map).then(items => {
@@ -143,8 +102,6 @@ class SyncCobrowsing extends React.Component {
             component.client  = client;
             component.setState({status:'connected'});
             component.loadFormData();
-            component.subscribeToParticipantsUpdates();
-            component.addParticipant(identity);
         } else {
           component.setState({
             status:'error', 
